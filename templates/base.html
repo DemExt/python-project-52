@@ -3,33 +3,84 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Менеджер задач</title>
     {% bootstrap_css %}
     {% bootstrap_javascript %}
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">Менеджер задач</a>
-            <div class="collapse navbar-collapse">
+            <a class="navbar-brand" href="{% url 'index' %}">Менеджер задач</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Пользователи</a>
+                        <a class="nav-link" href="{% url 'users_list' %}">Пользователи</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Вход</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Регистрация</a>
-                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <!-- Выход в Django 5.0+ требует POST-запроса -->
+                            <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="nav-link btn btn-link">Выход</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Вход</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'user_create' %}">Регистрация</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+
     <div class="container">
-        {% block content %}{% endblock %}
+        <!-- Вывод Flash-сообщений -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Основной контент страницы -->
+        {% block content %}
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <h1 class="mb-4">Регистрация</h1>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {# Автоматический вывод всех полей формы с оформлением Bootstrap #}
+                        {% bootstrap_form form %}
+                        
+                        <div class="mt-4">
+                            {% bootstrap_button button_type="submit" content="Зарегистрировать" button_class="btn-primary" %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
     </div>
+
+    <footer class="footer mt-auto py-3 bg-light border-top">
+        <div class="container text-center">
+            <span class="text-muted">© 2024 Hexlet Task Manager</span>
+        </div>
+    </footer>
 </body>
 </html>
