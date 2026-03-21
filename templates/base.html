@@ -25,6 +25,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'statuses_list' %}">Статусы</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tasks_list' %}">Задачи</a>
+                    </li>
                     {% endif %}
                 </ul>
                 <ul class="navbar-nav">
@@ -54,7 +57,7 @@
                 {# У Django тег 'error', а у Bootstrap класс 'danger'. Это фиксится в settings.py или здесь: #}
                 <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
                     {{ message }}
-                    <button type="button" class="btn-close" data-bs-alert="dismiss" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endif %}
@@ -65,7 +68,7 @@
 
     <footer class="footer mt-auto py-3 bg-light border-top">
         <div class="container text-center">
-            <span class="text-muted">© 2024 Hexlet Task Manager</span>
+            <span class="text-muted">© 2026 Hexlet Task Manager</span>
         </div>
     </footer>
 </body>

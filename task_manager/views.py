@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from .forms import CustomUserCreationForm, StatusForm
 from .models import Status
 from django.db.models import ProtectedError
+from .models import Task
 
 # Главная
 def index(request):
@@ -64,6 +65,13 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
         messages.error(self.request, "У вас нет прав для изменения другого пользователя.")
         return redirect('users_list')
 
+    def post(self, request, *args, **kwargs):
+        try:
+            return super().post(request, *args, **kwargs)
+        except ProtectedError:
+            messages.error(request, "Невозможно удалить пользователя, потому что он используется")
+            return redirect('users_list')
+
 class StatusListView(LoginRequiredMixin, ListView):
     model = Status
     template_name = 'statuses/index.html'
@@ -98,3 +106,48 @@ class StatusDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
     def test_func(self):
         return self.get_object() == self.request.user
+    
+
+class TaskListView(LoginRequiredMixin, ListView):
+    model = Task
+    template_name = 'tasks/index.html'
+    context_object_name = 'tasks'
+
+class TaskDetailView(LoginRequiredMixin, DetailView):
+    model = Task
+    template_name = 'tasks/show.html'
+    context_object_name = 'task'
+
+class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Task
+    fields = ['name', 'description', 'status', 'executor']
+    template_name = 'tasks/create.html'
+    success_url = reverse_lazy('tasks_list')
+    success_message = "Задача успешно создана"
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Task
+    fields = ['name', 'description', 'status', 'executor']
+    template_name = 'tasks/update.html'
+    success_url = reverse_lazy('tasks_list')
+    success_message = "Задача успешно изменена"
+
+class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
+    model = Task
+    template_name = 'tasks/delete.html'
+    success_url = reverse_lazy('tasks_list')
+    success_message = "Задача успешно удалена"
+
+    def test_func(self):
+        return self.get_object().author == self.request.user
+
+    def handle_no_permission(self):
+        messages.error(self.request, "Задачу может удалить только ее автор")
+        return redirect('tasks_list')
+    def form_valid(self, form):
+        messages.success(self.request, self.success_message)
+        return super().form_valid(form)
