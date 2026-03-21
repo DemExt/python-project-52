@@ -6,7 +6,9 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from .forms import CustomUserCreationForm 
+from .forms import CustomUserCreationForm, StatusForm
+from .models import Status
+from django.db.models import ProtectedError
 
 # Главная
 def index(request):
@@ -53,6 +55,46 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
     template_name = 'delete.html'
     success_url = reverse_lazy('users_list')
     success_message = "Пользователь успешно удален"
+
+    def test_func(self):
+        return self.get_object() == self.request.user
+
+    # чтобы при попытке удалить чужой профиль был редирект с ошибкой:
+    def handle_no_permission(self):
+        messages.error(self.request, "У вас нет прав для изменения другого пользователя.")
+        return redirect('users_list')
+
+class StatusListView(LoginRequiredMixin, ListView):
+    model = Status
+    template_name = 'statuses/index.html'
+    context_object_name = 'statuses'
+
+class StatusCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Status
+    form_class = StatusForm
+    template_name = 'statuses/create.html'
+    success_url = reverse_lazy('statuses_list')
+    success_message = "Статус успешно создан"
+
+class StatusUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Status
+    form_class = StatusForm
+    template_name = 'statuses/update.html'
+    success_url = reverse_lazy('statuses_list')
+    success_message = "Статус успешно изменен"
+
+class StatusDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = Status
+    template_name = 'statuses/delete.html'
+    success_url = reverse_lazy('statuses_list')
+    success_message = "Статус успешно удален"
+
+    def post(self, request, *args, **kwargs):
+        try:
+            return super().post(request, *args, **kwargs)
+        except ProtectedError:
+            messages.error(request, "Невозможно удалить статус")
+            return redirect('statuses_list')
 
     def test_func(self):
         return self.get_object() == self.request.user

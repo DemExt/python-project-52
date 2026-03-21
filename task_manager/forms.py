@@ -1,6 +1,12 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
+from .models import Status
+
+class StatusForm(forms.ModelForm):
+    class Meta:
+        model = Status
+        fields = ['name']
 
 class CustomUserCreationForm(UserCreationForm):
     # Явно добавляем поля, чтобы задать им правильные русские подписи
