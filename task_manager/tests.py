@@ -1,7 +1,70 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
-from task_manager.models import Status
+from .models import Task, Status
+
+
+class TasksTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        # Создаем двух пользователей: автора и "чужого"
+        self.author = User.objects.create_user(username='author', password='pass')
+        self.other_user = User.objects.create_user(username='other', password='pass')
+        
+        # Для задачи обязателен статус
+        self.status = Status.objects.create(name='В работе')
+        
+        # Создаем тестовую задачу
+        self.task = Task.objects.create(
+            name='Тестовая задача',
+            author=self.author,
+            executor=self.author,
+            status=self.status
+        )
+        self.list_url = reverse('tasks_list')
+        self.create_url = reverse('task_create')
+        self.delete_url = reverse('task_delete', kwargs={'pk': self.task.id})
+
+    # Проверка доступа: только залогиненные видят список
+    def test_tasks_list_access(self):
+        # Аноним — редирект на логин
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, 302)
+        
+        # Залогиненный — успех
+        self.client.login(username='author', password='pass')
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, 200)
+
+    # Проверка создания задачи
+    def test_create_task(self):
+        self.client.login(username='author', password='pass')
+        data = {
+            'name': 'Новая задача',
+            'status': self.status.id,
+            'executor': self.author.id
+        }
+        response = self.client.post(self.create_url, data)
+        self.assertRedirects(response, self.list_url)
+        self.assertTrue(Task.objects.filter(name='Новая задача').exists())
+
+    # Проверка удаления: только создатель
+    def test_delete_task_by_author(self):
+        self.client.login(username='author', password='pass')
+        response = self.client.post(self.delete_url)
+        self.assertRedirects(response, self.list_url)
+        self.assertFalse(Task.objects.filter(id=self.task.id).exists())
+
+    def test_delete_task_by_non_author(self):
+        # Логинимся под другим пользователем
+        self.client.login(username='other', password='pass')
+        response = self.client.post(self.delete_url)
+        # Должен быть редирект (из-за handle_no_permission), и задача остаться на месте
+        self.assertTrue(Task.objects.filter(id=self.task.id).exists())
+        
+        # Проверяем наличие flash-сообщения об ошибке
+        messages = list(response.wsgi_request._messages)
+        self.assertTrue(any("Задачу может удалить только ее автор" in m.message for m in messages))
 
 class StatusCRUDTest(TestCase):
     def setUp(self):

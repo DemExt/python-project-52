@@ -142,6 +142,10 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
     success_url = reverse_lazy('tasks_list')
     success_message = "Задача успешно удалена"
 
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super().delete(request, *args, **kwargs)
+
     def test_func(self):
         return self.get_object().author == self.request.user
 
