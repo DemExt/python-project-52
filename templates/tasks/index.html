@@ -1,8 +1,19 @@
 {% extends "base.html" %}
+{% load django_bootstrap5 %}
 
 {% block content %}
 <h1 class="my-4">Задачи</h1>
 <a class="btn btn-primary mb-3" href="{% url 'task_create' %}">Создать задачу</a>
+
+<div class="card mb-3">
+  <div class="card-body bg-light">
+    <!-- Убираем d-flex и inline, оставляем обычную форму -->
+    <form method="get">
+      {% bootstrap_form filter.form %}
+      <button type="submit" class="btn btn-primary">Показать</button>
+    </form>
+  </div>
+</div>
 
 <table class="table table-striped">
   <thead>
@@ -26,8 +37,6 @@
       <td>{{ task.executor.get_full_name|default:task.executor.username }}</td>
       <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
       <td>
-        <a href="{% url 'task_show' task.id %}">Показать</a>
-        <br>
         <a href="{% url 'task_update' task.id %}">Изменить</a>
         <br>
         <a href="{% url 'task_delete' task.id %}">Удалить</a>

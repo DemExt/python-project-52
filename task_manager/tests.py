@@ -133,3 +133,20 @@ class LabelsTest(TestCase):
         # Проверяем: метка все еще в базе, есть ошибка
         self.assertTrue(Label.objects.filter(id=self.label.id).exists())
         self.assertRedirects(response, reverse('labels_list'))
+
+def test_filter_self_tasks(self):
+    self.client.login(username='author', password='pass')
+    # Задача, где я автор (создана в setUp)
+    # Создаем задачу, где автор — другой юзер
+    other_user = User.objects.create_user(username='other', password='pass')
+    Task.objects.create(name='Other Task', author=other_user, status=self.status)
+
+    # Применяем фильтр "Только свои задачи"
+    response = self.client.get(reverse('tasks_list'), {'self_tasks': 'on'})
+    self.assertEqual(len(response.context['tasks']), 1)
+    self.assertEqual(response.context['tasks'][0].name, 'Тестовая задача')
+
+def test_filter_by_label(self):
+    self.client.login(username='author', password='pass')
+    response = self.client.get(reverse('tasks_list'), {'labels': self.label.id})
+    self.assertContains(response, self.task.name)

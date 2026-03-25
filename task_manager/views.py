@@ -5,10 +5,12 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
+from django_filters.views import FilterView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from .forms import CustomUserCreationForm, StatusForm, TaskForm
 from .models import Status, Task, Label
 from django.db.models import ProtectedError
+from .filters import TaskFilter
 
 # Главная
 def index(request):
@@ -107,10 +109,11 @@ class StatusDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         return self.get_object() == self.request.user
     
 
-class TaskListView(LoginRequiredMixin, ListView):
+class TaskListView(LoginRequiredMixin, FilterView):
     model = Task
     template_name = 'tasks/index.html'
     context_object_name = 'tasks'
+    filterset_class = TaskFilter
 
 class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
