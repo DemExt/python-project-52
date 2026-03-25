@@ -9,6 +9,7 @@ def index(request):
     return render(request, 'index.html')
 
 urlpatterns = [
+    path('test-error/', views.test_error, name='test_error'),
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
     path('users/', views.UserListView.as_view(), name='users_list'),

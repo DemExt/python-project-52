@@ -11,6 +11,13 @@ from .forms import CustomUserCreationForm, StatusForm, TaskForm
 from .models import Status, Task, Label
 from django.db.models import ProtectedError
 from .filters import TaskFilter
+from django.http import HttpResponse
+
+def test_error(request):
+    """Trigger a test error for Rollbar."""
+    a = None
+    a.hello()  # This will raise AttributeError
+    return HttpResponse("This will not be reached")
 
 # Главная
 def index(request):
