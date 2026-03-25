@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<h1 class="my-4">
+    {% if form.instance.pk %}Изменить метку{% else %}Создать метку{% endif %}
+</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% if form.instance.pk %}
+        <button type="submit" class="btn btn-primary">Изменить</button>
+    {% else %}
+        <button type="submit" class="btn btn-primary">Создать</button>
+    {% endif %}
+</form>
+{% endblock %}

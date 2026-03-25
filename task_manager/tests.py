@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
-from .models import Task, Status
+from .models import Task, Status, Label
 
 
 class TasksTest(TestCase):
@@ -104,3 +104,32 @@ class StatusCRUDTest(TestCase):
         response = self.client.post(self.delete_url)
         self.assertEqual(response.status_code, 302)
         self.assertFalse(Status.objects.filter(id=self.status.id).exists())
+
+
+class LabelsTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='pass')
+        self.label = Label.objects.create(name='Bug')
+        self.client.login(username='testuser', password='pass')
+
+    def test_label_crud(self):
+        # Create
+        response = self.client.post(reverse('label_create'), {'name': 'Feature'})
+        self.assertTrue(Label.objects.filter(name='Feature').exists())
+        # Delete protection
+        task = Task.objects.create(name='T', status=status, author=self.user, executor=self.user)
+        task.labels.add(self.label)
+        response = self.client.post(reverse('label_delete', kwargs={'pk': self.label.id}))
+        self.assertTrue(Label.objects.filter(id=self.label.id).exists()) # Не удалилась
+
+    def test_delete_label_linked_to_task(self):
+        # Создаем задачу и привязываем метку
+        task = Task.objects.create(name='T', author=self.user, status=self.status, executor=self.user)
+        task.labels.add(self.label)
+        
+        # Пытаемся удалить метку
+        response = self.client.post(reverse('label_delete', kwargs={'pk': self.label.id}))
+        
+        # Проверяем: метка все еще в базе, есть ошибка
+        self.assertTrue(Label.objects.filter(id=self.label.id).exists())
+        self.assertRedirects(response, reverse('labels_list'))
