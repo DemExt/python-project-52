@@ -18,12 +18,6 @@ def index(request):
     division_by_zero = 1 / 0 
     return render(request, 'index.html')
 
-def test_error(request):
-    """Trigger a test error for Rollbar."""
-    a = None
-    a.hello()  # This will raise AttributeError
-    return HttpResponse("This will not be reached")
-
 # Главная
 def index(request):
     return render(request, 'index.html')
