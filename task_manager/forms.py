@@ -27,8 +27,6 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ['name', 'description', 'status', 'executor', 'labels']
-        # Django по умолчанию использует SelectMultiple для ManyToManyField, 
-        # но мы можем явно это указать для уверенности:
         widgets = {
             'labels': forms.SelectMultiple(attrs={'class': 'form-select'}),
         }
