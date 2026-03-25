@@ -9,5 +9,6 @@ dependencies = [
     "django-bootstrap5>=26.2",
     "django-filter>=25.2",
     "gunicorn>=25.1.0",
+    "rollbar>=1.3.0",
     "whitenoise>=6.12.0",
 ]
