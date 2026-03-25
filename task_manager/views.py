@@ -13,6 +13,11 @@ from django.db.models import ProtectedError
 from .filters import TaskFilter
 from django.http import HttpResponse
 
+def index(request):
+    # Эта строка специально вызовет ошибку при заходе на главную
+    division_by_zero = 1 / 0 
+    return render(request, 'index.html')
+
 def test_error(request):
     """Trigger a test error for Rollbar."""
     a = None
