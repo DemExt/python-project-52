@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.core.exceptions import ValidationError
 from django import forms
 from .models import Status, Task, Label
@@ -20,6 +20,18 @@ class CustomUserCreationForm(UserCreationForm):
         strip=False,
         help_text="Ваш пароль должен содержать не менее 3 символов."
     )
+
+class CustomUserChangeForm(UserChangeForm):
+    # Убираем поле пароля из этой формы, так как для смены пароля в Django 
+    # обычно используется отдельная страница. Если оставить, будет куча лишних полей.
+    password = None 
+    
+    first_name = forms.CharField(label="Имя", required=True, max_length=150)
+    last_name = forms.CharField(label="Фамилия", required=True, max_length=150)
+
+    class Meta:
+        model = User
+        fields = ("username", "first_name", "last_name")
 
     class Meta(UserCreationForm.Meta):
         model = User

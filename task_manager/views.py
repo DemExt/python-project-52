@@ -7,7 +7,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
 from django_filters.views import FilterView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from .forms import CustomUserCreationForm, StatusForm, TaskForm
+from .forms import CustomUserCreationForm, StatusForm, TaskForm, CustomUserChangeForm
 from .models import Status, Task, Label
 from django.db.models import ProtectedError
 from .filters import TaskFilter
@@ -41,7 +41,7 @@ class UserCreateView(SuccessMessageMixin, CreateView):
 
 class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = User
-    form_class = CustomUserCreationForm
+    form_class = CustomUserChangeForm
     template_name = 'update.html'
     success_url = reverse_lazy('users_list')
     success_message = "Пользователь успешно изменен"
