@@ -13,14 +13,19 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Label',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True, verbose_name='Имя')),
+                ('id', models.BigAutoField(
+                    auto_created=True, primary_key=True, serialize=False,
+                    verbose_name='ID')),
+                ('name', models.CharField(max_length=100, unique=True,
+                                          verbose_name='Имя')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
             ],
         ),
         migrations.AddField(
             model_name='task',
             name='labels',
-            field=models.ManyToManyField(blank=True, related_name='tasks', to='task_manager.label', verbose_name='Метки'),
+            field=models.ManyToManyField(blank=True, related_name='tasks',
+                                         to='task_manager.label',
+                                         verbose_name='Метки'),
         ),
     ]

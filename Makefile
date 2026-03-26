@@ -9,3 +9,6 @@ dev:
 
 render-start:
 	uv run gunicorn task_manager.wsgi:application --bind 0.0.0.0:10000
+
+lint:
+	uv run ruff check

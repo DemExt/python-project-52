@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import os
 from pathlib import Path
+
 from django.contrib.messages import constants as messages
 
 ROLLBAR_ACCESS_TOKEN = os.getenv('ROLLBAR_ACCESS_TOKEN')
@@ -41,7 +42,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2a0q6tk1%7d8pb3ss56hscg!idt0f!gj_-7465-5ku^)a+s44s'
+SECRET_KEY = 'django-insecure-2a0q6tk1%7d8pb3ss56hscg!idt0f!gj_' \
+'-7465-5ku^)a+s44s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

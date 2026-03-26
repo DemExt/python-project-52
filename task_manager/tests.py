@@ -1,19 +1,22 @@
-from django.test import TestCase, Client
-from django.urls import reverse
 from django.contrib.auth.models import User
-from .models import Task, Status, Label
+from django.test import Client, TestCase
+from django.urls import reverse
+
+from .models import Label, Status, Task
 
 
 class TasksTest(TestCase):
     def setUp(self):
         self.client = Client()
         # Создаем двух пользователей: автора и "чужого"
-        self.author = User.objects.create_user(username='author', password='pass')
-        self.other_user = User.objects.create_user(username='other', password='pass')
-        
+        self.author = User.objects.create_user(username='author',
+                                               password='pass')
+        self.other_user = User.objects.create_user(username='other',
+                                                   password='pass')
+
         # Для задачи обязателен статус
         self.status = Status.objects.create(name='В работе')
-        
+
         # Создаем тестовую задачу
         self.task = Task.objects.create(
             name='Тестовая задача',
@@ -30,7 +33,7 @@ class TasksTest(TestCase):
         # Аноним — редирект на логин
         response = self.client.get(self.list_url)
         self.assertEqual(response.status_code, 302)
-        
+
         # Залогиненный — успех
         self.client.login(username='author', password='pass')
         response = self.client.get(self.list_url)
@@ -59,16 +62,18 @@ class TasksTest(TestCase):
         # Логинимся под другим пользователем
         self.client.login(username='other', password='pass')
         response = self.client.post(self.delete_url)
-        # Должен быть редирект (из-за handle_no_permission), и задача остаться на месте
+        # Должен быть редирект, и задача остаться на месте
         self.assertTrue(Task.objects.filter(id=self.task.id).exists())
-        
+
         # Проверяем наличие flash-сообщения об ошибке
         messages = list(response.wsgi_request._messages)
-        self.assertTrue(any("Задачу может удалить только ее автор" in m.message for m in messages))
+        self.assertTrue(any("Задачу может удалить только ее автор"
+                            in m.message for m in messages))
 
 class StatusCRUDTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='password')
+        self.user = User.objects.create_user(username='testuser',
+                                             password='password')
         self.client = Client()
         self.status = Status.objects.create(name='Новый')
         self.list_url = reverse('statuses_list')
@@ -108,28 +113,35 @@ class StatusCRUDTest(TestCase):
 
 class LabelsTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='pass')
+        self.user = User.objects.create_user(username='testuser',
+                                             password='pass')
         self.label = Label.objects.create(name='Bug')
         self.client.login(username='testuser', password='pass')
 
     def test_label_crud(self):
         # Create
-        response = self.client.post(reverse('label_create'), {'name': 'Feature'})
+        response = self.client.post(
+            reverse('label_create'), {'name': 'Feature'})
         self.assertTrue(Label.objects.filter(name='Feature').exists())
         # Delete protection
-        task = Task.objects.create(name='T', status=status, author=self.user, executor=self.user)
+        task = Task.objects.create(name='T', status=self.status,
+                                   author=self.user, executor=self.user)
         task.labels.add(self.label)
-        response = self.client.post(reverse('label_delete', kwargs={'pk': self.label.id}))
-        self.assertTrue(Label.objects.filter(id=self.label.id).exists()) # Не удалилась
+        response = self.client.post(reverse('label_delete',
+                                            kwargs={'pk': self.label.id}))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Label.objects.filter(id=self.label.id).exists())
 
     def test_delete_label_linked_to_task(self):
         # Создаем задачу и привязываем метку
-        task = Task.objects.create(name='T', author=self.user, status=self.status, executor=self.user)
+        task = Task.objects.create(name='T', author=self.user,
+                                   status=self.status, executor=self.user)
         task.labels.add(self.label)
-        
+
         # Пытаемся удалить метку
-        response = self.client.post(reverse('label_delete', kwargs={'pk': self.label.id}))
-        
+        response = self.client.post(reverse('label_delete',
+                                            kwargs={'pk': self.label.id}))
+
         # Проверяем: метка все еще в базе, есть ошибка
         self.assertTrue(Label.objects.filter(id=self.label.id).exists())
         self.assertRedirects(response, reverse('labels_list'))
@@ -139,7 +151,8 @@ def test_filter_self_tasks(self):
     # Задача, где я автор (создана в setUp)
     # Создаем задачу, где автор — другой юзер
     other_user = User.objects.create_user(username='other', password='pass')
-    Task.objects.create(name='Other Task', author=other_user, status=self.status)
+    Task.objects.create(name='Other Task', author=other_user,
+                        status=self.status)
 
     # Применяем фильтр "Только свои задачи"
     response = self.client.get(reverse('tasks_list'), {'self_tasks': 'on'})
@@ -148,5 +161,6 @@ def test_filter_self_tasks(self):
 
 def test_filter_by_label(self):
     self.client.login(username='author', password='pass')
-    response = self.client.get(reverse('tasks_list'), {'labels': self.label.id})
+    response = self.client.get(reverse('tasks_list'),
+                               {'labels': self.label.id})
     self.assertContains(response, self.task.name)

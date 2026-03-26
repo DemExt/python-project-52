@@ -1,18 +1,30 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.contrib.auth.models import User
-from django.contrib.messages.views import SuccessMessageMixin
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
-from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
-from django_filters.views import FilterView
-from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-from .forms import CustomUserCreationForm, StatusForm, TaskForm, CustomUserChangeForm
-from .models import Status, Task, Label
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import ProtectedError
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+)
+from django_filters.views import FilterView
+
 from .filters import TaskFilter
-from django.http import HttpResponse
+from .forms import (
+    CustomUserChangeForm,
+    CustomUserCreationForm,
+    StatusForm,
+    TaskForm,
+)
+from .models import Label, Status, Task
+
 
 # Главная
 def index(request):
@@ -30,7 +42,7 @@ class UserLogoutView(LogoutView):
 
 class UserListView(ListView):
     model = User
-    template_name = 'users_list.html' 
+    template_name = 'users_list.html'
     context_object_name = 'users'
 
 class UserCreateView(SuccessMessageMixin, CreateView):
@@ -39,7 +51,8 @@ class UserCreateView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('login')
     success_message = "Пользователь успешно зарегистрирован"
 
-class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
+class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin,
+                     SuccessMessageMixin, UpdateView):
     model = User
     form_class = CustomUserChangeForm
     template_name = 'update.html'
@@ -48,7 +61,7 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
 
     def test_func(self):
         return self.get_object() == self.request.user
-    
+
     def form_valid(self, form):
         # Сохраняем форму (и новый пароль)
         response = super().form_valid(form)
@@ -60,7 +73,8 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
         messages.error(self.request, "У вас нет прав для изменения")
         return redirect('users_list')
 
-class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
+class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin,
+                     SuccessMessageMixin, DeleteView):
     model = User
     template_name = 'delete.html'
     success_url = reverse_lazy('users_list')
@@ -71,14 +85,19 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
 
     # чтобы при попытке удалить чужой профиль был редирект с ошибкой:
     def handle_no_permission(self):
-        messages.error(self.request, "У вас нет прав для изменения другого пользователя.")
+        messages.error(
+            self.request, "У вас нет прав для изменения другого пользователя."
+            )
         return redirect('users_list')
 
     def post(self, request, *args, **kwargs):
         try:
             return super().post(request, *args, **kwargs)
         except ProtectedError:
-            messages.error(request, "Невозможно удалить пользователя, потому что он используется")
+            messages.error(
+                request,
+                "Невозможно удалить пользователя, потому что он используется"
+                )
             return redirect('users_list')
 
 class StatusListView(LoginRequiredMixin, ListView):
@@ -112,7 +131,7 @@ class StatusDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         except ProtectedError:
             messages.error(request, "Невозможно удалить статус")
             return redirect('statuses_list')
-    
+
 class TaskListView(LoginRequiredMixin, FilterView):
     model = Task
     template_name = 'tasks/index.html'
@@ -142,7 +161,8 @@ class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy('tasks_list')
     success_message = "Задача успешно изменена"
 
-class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
+class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin,
+                     SuccessMessageMixin, DeleteView):
     model = Task
     template_name = 'tasks/delete.html'
     success_url = reverse_lazy('tasks_list')
@@ -154,7 +174,7 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
     def handle_no_permission(self):
         messages.error(self.request, "Задачу может удалить только ее автор")
         return redirect('tasks_list')
-    
+
 class LabelListView(LoginRequiredMixin, ListView):
     model = Label
     template_name = 'labels/index.html'

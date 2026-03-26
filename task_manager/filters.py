@@ -1,7 +1,9 @@
-from django.contrib.auth.models import User 
 import django_filters
 from django import forms
-from .models import Task, Status, Label
+from django.contrib.auth.models import User
+
+from .models import Label, Status, Task
+
 
 class TaskFilter(django_filters.FilterSet):
     # Фильтр "Только свои задачи" (чекбокс)
@@ -10,18 +12,18 @@ class TaskFilter(django_filters.FilterSet):
         method='filter_self_tasks',
         label='Только свои задачи'
     )
-    
+
     # Стандартные фильтры с точными подписями
     status = django_filters.ModelChoiceFilter(
-        queryset=Status.objects.all(), 
+        queryset=Status.objects.all(),
         label='Статус'
     )
     executor = django_filters.ModelChoiceFilter(
-        queryset=User.objects.all(), 
+        queryset=User.objects.all(),
         label='Исполнитель'
     )
     labels = django_filters.ModelChoiceFilter(
-        queryset=Label.objects.all(), 
+        queryset=Label.objects.all(),
         label='Метка'
     )
 
