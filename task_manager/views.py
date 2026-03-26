@@ -5,6 +5,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django_filters.views import FilterView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from .forms import CustomUserCreationForm, StatusForm, TaskForm, CustomUserChangeForm
@@ -29,7 +30,6 @@ class UserLogoutView(LogoutView):
 
 class UserListView(ListView):
     model = User
-    # Твой путь к файлу
     template_name = 'users_list.html' 
     context_object_name = 'users'
 
@@ -48,6 +48,13 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
 
     def test_func(self):
         return self.get_object() == self.request.user
+    
+    def form_valid(self, form):
+        # Сохраняем форму (и новый пароль)
+        response = super().form_valid(form)
+        # Обновляем хеш сессии, чтобы юзера не выкинуло из системы
+        update_session_auth_hash(self.request, form.instance)
+        return response
 
     def handle_no_permission(self):
         messages.error(self.request, "У вас нет прав для изменения")

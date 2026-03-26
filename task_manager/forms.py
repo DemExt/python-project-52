@@ -31,6 +31,17 @@ class CustomUserCreationForm(UserCreationForm):
         if password and len(password) < 3:
             raise ValidationError("Пароль должен содержать не менее 3 символов.")
         return password
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
+
+        # Если пароль введен, он обязан совпадать с подтверждением
+        if password1 and password1 != password2:
+            raise ValidationError("Пароли не совпадают.")
+        return cleaned_data
+
 
 class CustomUserChangeForm(UserChangeForm):
     password = None 
@@ -59,6 +70,16 @@ class CustomUserChangeForm(UserChangeForm):
         if password and len(password) < 3:
             raise ValidationError("Пароль должен содержать не менее 3 символов.")
         return password
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get("password1")
+        password2 = cleaned_data.get("password2")
+
+        # Если пользователь начал вводить новый пароль, проверяем совпадение
+        if password1 and password1 != password2:
+            raise ValidationError("Пароли не совпадают.")
+        return cleaned_data
     
     def save(self, commit=True):
         user = super().save(commit=False)
