@@ -48,3 +48,5 @@ class TaskForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['labels'].label = "Метки"
+        self.fields['labels'].required = False # Чтобы тест не падал, если метки не выбраны
+        self.fields['executor'].label = "Исполнитель"
