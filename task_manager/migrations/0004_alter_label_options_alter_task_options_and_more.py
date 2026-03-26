@@ -6,28 +6,30 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('task_manager', '0003_label_task_labels'),
+        ("task_manager", "0003_label_task_labels"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='label',
-            options={'verbose_name': 'Метка'},
+            name="label",
+            options={"verbose_name": "Метка"},
         ),
         migrations.AlterModelOptions(
-            name='task',
-            options={'verbose_name': 'Задача'},
+            name="task",
+            options={"verbose_name": "Задача"},
         ),
         migrations.AlterField(
-            model_name='task',
-            name='executor',
+            model_name="task",
+            name="executor",
             field=models.ForeignKey(
-                blank=True, null=True,
+                blank=True,
+                null=True,
                 on_delete=django.db.models.deletion.PROTECT,
-                related_name='executed_tasks', to=settings.AUTH_USER_MODEL,
-                verbose_name='Исполнитель'),
+                related_name="executed_tasks",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Исполнитель",
+            ),
         ),
     ]
