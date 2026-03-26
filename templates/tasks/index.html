@@ -34,7 +34,13 @@
       <td><a href="{% url 'task_show' task.id %}">{{ task.name }}</a></td>
       <td>{{ task.status }}</td>
       <td>{{ task.author.get_full_name|default:task.author.username }}</td>
-      <td>{{ task.executor.get_full_name|default:task.executor.username }}</td>
+      <td>
+        {% if task.executor %}
+          {{ task.executor.get_full_name|default:task.executor.username }}
+        {% else %}
+          {# Оставляем пустым или пишем прочерк #}
+        {% endif %}
+      </td>
       <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
       <td>
         <a href="{% url 'task_update' task.id %}">Изменить</a>

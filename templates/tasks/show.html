@@ -7,7 +7,7 @@
     <p><strong>Описание:</strong> {{ task.description }}</p>
     <hr>
     <p><strong>Автор:</strong> {{ task.author.get_full_name|default:task.author.username }}</p>
-    <p><strong>Исполнитель:</strong> {{ task.executor.get_full_name|default:task.executor.username }}</p>
+    <p><strong>Исполнитель:</strong> {{ task.executor.get_full_name|default:task.executor.username|default:"" }}</p>
     <p><strong>Статус:</strong> {{ task.status }}</p>
     <p><strong>Дата создания:</strong> {{ task.created_at|date:"d.m.Y H:i" }}</p>
     
