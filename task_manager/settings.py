@@ -28,6 +28,7 @@ ROLLBAR = {
 
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
+    messages.SUCCESS: 'success',
 }
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
