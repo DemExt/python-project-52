@@ -14,16 +14,25 @@ class CustomUserCreationForm(UserCreationForm):
     first_name = forms.CharField(label="Имя", required=True, max_length=150)
     last_name = forms.CharField(label="Фамилия", required=True, max_length=150)
 
+    # Переопределяем пароль для подсказки
     password1 = forms.CharField(
         label="Пароль",
         widget=forms.PasswordInput,
         strip=False,
-        help_text="Ваш пароль должен содержать не менее 3 символов."
+        help_text="Пароль должен содержать не менее 3 символов."
     )
 
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ("username", "first_name", "last_name")
+
+    def clean_password1(self):
+        password = self.cleaned_data.get("password1")
+        if password and len(password) < 3:
+            raise ValidationError("Пароль должен содержать не менее 3 символов.")
+        return password
+
 class CustomUserChangeForm(UserChangeForm):
-    # Убираем поле пароля из этой формы, так как для смены пароля в Django 
-    # обычно используется отдельная страница. Если оставить, будет куча лишних полей.
     password = None 
     
     first_name = forms.CharField(label="Имя", required=True, max_length=150)
