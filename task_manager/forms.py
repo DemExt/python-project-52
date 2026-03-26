@@ -42,7 +42,7 @@ class CustomUserChangeForm(UserChangeForm):
         label="Пароль",
         widget=forms.PasswordInput,
         required=False, # Сделаем необязательным, если пароль не меняется
-        help_text="Ваш пароль должен содержать не менее 3 символов."
+        help_text="Пароль должен содержать не менее 3 символов."
     )
     password2 = forms.CharField(
         label="Подтверждение пароля",
@@ -50,7 +50,7 @@ class CustomUserChangeForm(UserChangeForm):
         required=False
     )
 
-    class Meta:
+    class Meta(UserChangeForm.Meta):
         model = User
         fields = ("username", "first_name", "last_name")
 
