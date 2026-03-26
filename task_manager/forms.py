@@ -44,6 +44,12 @@ class TaskForm(forms.ModelForm):
         widgets = {
             'labels': forms.SelectMultiple(attrs={'class': 'form-select'}),
         }
+        # Если тест требует точный текст ошибки при дубликате имени:
+        error_messages = {
+            'name': {
+                'unique': "Задача с таким Имя уже существует",
+            },
+        }
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

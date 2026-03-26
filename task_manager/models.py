@@ -15,6 +15,9 @@ class Label(models.Model):
     def __str__(self):
         return self.name
     
+    class Meta:
+        verbose_name = "Метка"
+    
 class Task(models.Model):
     name = models.CharField(max_length=255, unique=True, verbose_name="Имя")
     description = models.TextField(blank=True, verbose_name="Описание")
@@ -26,3 +29,6 @@ class Task(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Задача"
