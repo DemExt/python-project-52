@@ -13,11 +13,6 @@ from django.db.models import ProtectedError
 from .filters import TaskFilter
 from django.http import HttpResponse
 
-def index(request):
-    # Эта строка специально вызовет ошибку при заходе на главную
-    division_by_zero = 1 / 0 
-    return render(request, 'index.html')
-
 # Главная
 def index(request):
     return render(request, 'index.html')
@@ -110,11 +105,7 @@ class StatusDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         except ProtectedError:
             messages.error(request, "Невозможно удалить статус")
             return redirect('statuses_list')
-
-    def test_func(self):
-        return self.get_object() == self.request.user
     
-
 class TaskListView(LoginRequiredMixin, FilterView):
     model = Task
     template_name = 'tasks/index.html'
@@ -150,19 +141,12 @@ class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
     success_url = reverse_lazy('tasks_list')
     success_message = "Задача успешно удалена"
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, self.success_message)
-        return super().delete(request, *args, **kwargs)
-
     def test_func(self):
         return self.get_object().author == self.request.user
 
     def handle_no_permission(self):
         messages.error(self.request, "Задачу может удалить только ее автор")
         return redirect('tasks_list')
-    def form_valid(self, form):
-        messages.success(self.request, self.success_message)
-        return super().form_valid(form)
     
 class LabelListView(LoginRequiredMixin, ListView):
     model = Label

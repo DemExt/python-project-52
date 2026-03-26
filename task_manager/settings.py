@@ -31,6 +31,8 @@ MESSAGE_TAGS = {
     messages.SUCCESS: 'success',
 }
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
