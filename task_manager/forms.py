@@ -111,6 +111,10 @@ class TaskForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['executor'].label = "Исполнитель"
+        self.fields['executor'].label_from_instance = lambda obj: obj.get_full_name() or obj.username
+        self.fields['status'].label = "Статус"
+        self.fields['labels'].label = "Метки"
         self.fields['executor'].required = False
         self.fields['labels'].required = False
         self.fields['description'].required = False
