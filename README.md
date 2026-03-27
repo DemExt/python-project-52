@@ -3,8 +3,6 @@
 ### Ссылка на проект:
 https://hexlet-code-b5jd.onrender.com
 
-[![Actions Status](https://github.com/DemExt/python-project-52/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/DemExt/python-project-52/actions)
-
 [![hexlet-check](https://github.com/DemExt/python-project-52/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/DemExt/python-project-52/actions/workflows/hexlet-check.yml)
 
 [![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-light.svg)](https://sonarcloud.io/summary/new_code?id=DemExt_python-project-52)
