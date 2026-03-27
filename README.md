@@ -11,7 +11,7 @@ https://hexlet-code-b5jd.onrender.com
 
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=DemExt_python-project-52&metric=coverage)](https://sonarcloud.io/summary/new_code?id=DemExt_python-project-52)
 
---
+---
 
 ## Описание
 Это полноценное веб-приложение для управления задачами, написанное на **Django**. Оно позволяет регистрировать пользователей, создавать статусы, метки и задачи, а также фильтровать их по различным параметрам.
