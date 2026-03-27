@@ -124,6 +124,7 @@ class LabelsTest(TestCase):
         self.user = User.objects.create_user(
             username="testuser", password="pass"
         )
+        self.status = Status.objects.create(name='New')
         self.label = Label.objects.create(name="Bug")
         self.client.login(username="testuser", password="pass")
 
