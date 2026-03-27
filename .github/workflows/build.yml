@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Важно для корректного анализа истории
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -24,13 +24,16 @@ jobs:
         run: |
           pip install uv
           uv sync
+          # Устанавливаем coverage, если его нет в зависимостях
+          uv pip install coverage 
           # Генерируем данные о покрытии
           uv run coverage run manage.py test
-          # Превращаем их в XML-отчет для Сонара
+          # Превращаем их в XML-отчет
           uv run coverage xml
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+      - name: SonarQube Cloud Scan
+        # Используем новую версию, как просил линтер в логах
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
