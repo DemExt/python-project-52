@@ -18,18 +18,18 @@
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users_list' %}">Пользователи</a>
+                        <a class="nav-link" href="{% url 'users:index' %}">Пользователи</a>
                     </li>
                     {# Добавляем ссылку на статусы только для залогиненных #}
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'statuses_list' %}">Статусы</a>
+                        <a class="nav-link" href="{% url 'statuses:index' %}">Статусы</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'tasks_list' %}">Задачи</a>
+                        <a class="nav-link" href="{% url 'tasks:list' %}">Задачи</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'labels_list' %}">Метки</a>
+                        <a class="nav-link" href="{% url 'labels:index' %}">Метки</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -46,7 +46,7 @@
                             <a class="nav-link" href="{% url 'login' %}">Вход</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'user_create' %}">Регистрация</a>
+                            <a class="nav-link" href="{% url 'users:create' %}">Регистрация</a>
                         </li>
                     {% endif %}
                 </ul>

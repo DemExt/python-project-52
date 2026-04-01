@@ -2,7 +2,8 @@
 
 {% block content %}
 <h1 class="my-4">Статусы</h1>
-<a class="btn btn-primary mb-3" href="{% url 'status_create' %}">Создать статус</a>
+
+<a class="btn btn-primary mb-3" href="{% url 'statuses:create' %}">Создать статус</a>
 
 <table class="table table-striped">
   <thead>
@@ -20,9 +21,9 @@
       <td>{{ status.name }}</td>
       <td>{{ status.created_at|date:"d.m.Y H:i" }}</td>
       <td>
-        <a href="{% url 'status_update' status.id %}">Изменить</a>
+        <a href="{% url 'statuses:update' status.id %}">Изменить</a>
         <br>
-        <a href="{% url 'status_delete' status.id %}">Удалить</a>
+        <a href="{% url 'statuses:delete' status.id %}">Удалить</a>
       </td>
     </tr>
     {% endfor %}

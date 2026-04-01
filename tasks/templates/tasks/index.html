@@ -3,7 +3,7 @@
 
 {% block content %}
 <h1 class="my-4">Задачи</h1>
-<a class="btn btn-primary mb-3" href="{% url 'task_create' %}">Создать задачу</a>
+<a class="btn btn-primary mb-3" href="{% url 'tasks:create' %}">Создать задачу</a>
 
 <div class="card mb-3">
   <div class="card-body bg-light">
@@ -31,7 +31,7 @@
     {% for task in tasks %}
     <tr>
       <td>{{ task.id }}</td>
-      <td><a href="{% url 'task_show' task.id %}">{{ task.name }}</a></td>
+      <td><a href="{% url 'tasks:show' task.id %}">{{ task.name }}</a></td>
       <td>{{ task.status }}</td>
       <td>{{ task.author.get_full_name|default:task.author.username }}</td>
       <td>
@@ -43,9 +43,9 @@
       </td>
       <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
       <td>
-        <a href="{% url 'task_update' task.id %}">Изменить</a>
+        <a href="{% url 'tasks:update' task.id %}">Изменить</a>
         <br>
-        <a href="{% url 'task_delete' task.id %}">Удалить</a>
+        <a href="{% url 'tasks:delete' task.id %}">Удалить</a>
       </td>
     </tr>
     {% endfor %}
