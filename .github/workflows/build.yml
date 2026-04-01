@@ -25,7 +25,9 @@ jobs:
           pip install uv
           uv sync
           # Устанавливаем coverage, если его нет в зависимостях
-          uv pip install coverage 
+          uv pip install coverage
+          # Установка Chromium и системных библиотек для него
+          npx playwright install --with-deps chromium 
           # Генерируем данные о покрытии
           uv run coverage run manage.py test
           # Превращаем их в XML-отчет
