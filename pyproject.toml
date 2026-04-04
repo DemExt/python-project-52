@@ -37,10 +37,5 @@ select = ["E", "F", "W", "I"]
 #игнорирование E302
 ignore = []
 
-[dependency-groups]
-dev = [
-    "coverage>=7.13.5",
-]
-
 [tool.ruff]
 line-length = 79
