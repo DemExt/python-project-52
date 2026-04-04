@@ -1,4 +1,3 @@
-
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -9,7 +8,8 @@ from .models import Status
 class StatusCRUDTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
-            username="testuser", password="password")
+            username="testuser", password="password"
+        )
         self.client = Client()
         self.status = Status.objects.create(name="Новый")
         # Исправляем ссылки на формат с namespace

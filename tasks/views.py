@@ -14,16 +14,19 @@ from .models import Task
 def index(request):
     return render(request, "index.html")
 
+
 class TaskListView(LoginRequiredMixin, FilterView):
     model = Task
     template_name = "tasks/index.html"
     context_object_name = "tasks"
     filterset_class = TaskFilter
 
+
 class TaskDetailView(LoginRequiredMixin, DetailView):
     model = Task
     template_name = "tasks/show.html"
     context_object_name = "task"
+
 
 class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Task
@@ -35,6 +38,7 @@ class TaskCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
 
 class TaskUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Task

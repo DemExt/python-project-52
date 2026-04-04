@@ -4,26 +4,34 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Status',
+            name="Status",
             fields=[
-                ('id', models.BigAutoField(
-                    auto_created=True, primary_key=True,
-                    serialize=False, verbose_name='ID')),
-                ('name', models.CharField(
-                    max_length=100, unique=True, verbose_name='Имя')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        max_length=100, unique=True, verbose_name="Имя"
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
             options={
-                'verbose_name': 'Статус',
-                'verbose_name_plural': 'Статусы',
+                "verbose_name": "Статус",
+                "verbose_name_plural": "Статусы",
             },
         ),
     ]

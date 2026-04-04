@@ -16,15 +16,18 @@ class UserLoginView(SuccessMessageMixin, LoginView):
     template_name = "users/login.html"
     success_message = "Вы залогинены"
 
+
 class UserLogoutView(LogoutView):
     def dispatch(self, request, *args, **kwargs):
         messages.info(request, "Вы разлогинены")
         return super().dispatch(request, *args, **kwargs)
 
+
 class UserListView(ListView):
     model = User
     template_name = "users/index.html"
     context_object_name = "users"
+
 
 class UserCreateView(SuccessMessageMixin, CreateView):
     form_class = CustomUserCreationForm
@@ -32,8 +35,10 @@ class UserCreateView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy("login")
     success_message = "Пользователь успешно зарегистрирован"
 
+
 class UserUpdateView(
-    LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
+    LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView
+):
     model = User
     form_class = CustomUserChangeForm
     template_name = "users/update.html"
@@ -45,8 +50,8 @@ class UserUpdateView(
 
     def handle_no_permission(self):
         messages.error(
-            self.request,
-            "У вас нет прав для изменения другого пользователя.")
+            self.request, "У вас нет прав для изменения другого пользователя."
+        )
         return redirect("users:index")
 
     def form_valid(self, form):
@@ -54,8 +59,10 @@ class UserUpdateView(
         update_session_auth_hash(self.request, self.object)
         return response
 
+
 class UserDeleteView(
-    LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
+    LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView
+):
     model = User
     template_name = "users/delete.html"
     success_url = reverse_lazy("users:index")
@@ -70,5 +77,6 @@ class UserDeleteView(
         except ProtectedError:
             messages.error(
                 request,
-                "Невозможно удалить пользователя, потому что он используется")
+                "Невозможно удалить пользователя, потому что он используется",
+            )
             return redirect("users:index")

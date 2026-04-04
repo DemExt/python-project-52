@@ -15,12 +15,14 @@ class StatusListView(LoginRequiredMixin, ListView):
     template_name = "statuses/index.html"
     context_object_name = "statuses"
 
+
 class StatusCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Status
     form_class = StatusForm
     template_name = "statuses/create.html"
-    success_url = reverse_lazy("statuses:index") # Используем namespace
+    success_url = reverse_lazy("statuses:index")  # Используем namespace
     success_message = "Статус успешно создан"
+
 
 class StatusUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Status
@@ -28,6 +30,7 @@ class StatusUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     template_name = "statuses/update.html"
     success_url = reverse_lazy("statuses:index")
     success_message = "Статус успешно изменен"
+
 
 class StatusDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Status
@@ -41,5 +44,6 @@ class StatusDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         except ProtectedError:
             messages.error(
                 request,
-                "Невозможно удалить статус, потому что он используется")
+                "Невозможно удалить статус, потому что он используется",
+            )
             return redirect("statuses:index")

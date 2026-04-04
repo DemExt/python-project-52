@@ -13,6 +13,7 @@ class LabelListView(LoginRequiredMixin, ListView):
     template_name = "labels/index.html"
     context_object_name = "labels"
 
+
 class LabelCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Label
     fields = ["name"]
@@ -20,12 +21,14 @@ class LabelCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_url = reverse_lazy("labels:index")
     success_message = "Метка успешно создана"
 
+
 class LabelUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Label
     fields = ["name"]
     template_name = "labels/update.html"
     success_url = reverse_lazy("labels:index")
     success_message = "Метка успешно изменена"
+
 
 class LabelDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Label
@@ -39,6 +42,7 @@ class LabelDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         if label.tasks.exists():
             messages.error(
                 request,
-                "Невозможно удалить метку, потому что она используется")
+                "Невозможно удалить метку, потому что она используется",
+            )
             return redirect("labels:index")
         return super().post(request, *args, **kwargs)

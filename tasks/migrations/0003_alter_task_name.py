@@ -4,16 +4,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('tasks', '0002_alter_task_executor_alter_task_name'),
+        ("tasks", "0002_alter_task_executor_alter_task_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='task',
-            name='name',
+            model_name="task",
+            name="name",
             field=models.CharField(
-                max_length=100, unique=True, verbose_name='Имя'),
+                max_length=100, unique=True, verbose_name="Имя"
+            ),
         ),
     ]

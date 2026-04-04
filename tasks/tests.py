@@ -12,9 +12,11 @@ class TasksTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.author = User.objects.create_user(
-            username="author", password="pass")
+            username="author", password="pass"
+        )
         self.other_user = User.objects.create_user(
-            username="other", password="pass")
+            username="other", password="pass"
+        )
         self.status = Status.objects.create(name="В работе")
         self.label = Label.objects.create(name="Bug")
         self.task = Task.objects.create(
@@ -39,8 +41,10 @@ class TasksTest(TestCase):
     def test_create_task(self):
         self.client.login(username="author", password="pass")
         data = {
-            "name": "Новая", "status": self.status.id,
-            "executor": self.author.id}
+            "name": "Новая",
+            "status": self.status.id,
+            "executor": self.author.id,
+        }
         response = self.client.post(self.create_url, data)
         self.assertRedirects(response, self.list_url)
         self.assertTrue(Task.objects.filter(name="Новая").exists())

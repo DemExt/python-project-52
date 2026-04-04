@@ -6,25 +6,27 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('tasks', '0001_initial'),
+        ("tasks", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='task',
-            name='executor',
+            model_name="task",
+            name="executor",
             field=models.ForeignKey(
-                blank=True, null=True,
+                blank=True,
+                null=True,
                 on_delete=django.db.models.deletion.PROTECT,
-                related_name='tasks', to=settings.AUTH_USER_MODEL,
-                verbose_name='Исполнитель'),
+                related_name="tasks",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="Исполнитель",
+            ),
         ),
         migrations.AlterField(
-            model_name='task',
-            name='name',
-            field=models.CharField(max_length=100, verbose_name='Имя'),
+            model_name="task",
+            name="name",
+            field=models.CharField(max_length=100, verbose_name="Имя"),
         ),
     ]
