@@ -25,8 +25,8 @@
   
     <hr>
     <div class="mt-3">
-        <a href="{% url 'task_update' task.id %}">Изменить</a>
-        <a href="{% url 'task_delete' task.id %}" class="text-danger ms-2">Удалить</a>
+        <a href="{% url 'tasks:update' task.id %}">Изменить</a>
+        <a href="{% url 'tasks:delete' task.id %}" class="text-danger ms-2">Удалить</a>
     </div>
   </div>
 </div>
