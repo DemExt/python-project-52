@@ -1,15 +1,16 @@
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth import update_session_auth_hash
-from django.contrib import messages
+from django.db.models import ProtectedError
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.db.models import ProtectedError
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .forms import CustomUserChangeForm, CustomUserCreationForm
+
 
 class UserLoginView(SuccessMessageMixin, LoginView):
     template_name = "users/login.html"
@@ -31,7 +32,8 @@ class UserCreateView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy("login")
     success_message = "Пользователь успешно зарегистрирован"
 
-class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
+class UserUpdateView(
+    LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = User
     form_class = CustomUserChangeForm
     template_name = "users/update.html"
@@ -42,15 +44,18 @@ class UserUpdateView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
         return self.get_object() == self.request.user
 
     def handle_no_permission(self):
-        messages.error(self.request, "У вас нет прав для изменения другого пользователя.")
+        messages.error(
+            self.request,
+            "У вас нет прав для изменения другого пользователя.")
         return redirect("users:index")
-    
+
     def form_valid(self, form):
         response = super().form_valid(form)
         update_session_auth_hash(self.request, self.object)
         return response
 
-class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
+class UserDeleteView(
+    LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
     model = User
     template_name = "users/delete.html"
     success_url = reverse_lazy("users:index")
@@ -63,5 +68,7 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixi
         try:
             return super().post(request, *args, **kwargs)
         except ProtectedError:
-            messages.error(request, "Невозможно удалить пользователя, потому что он используется")
+            messages.error(
+                request,
+                "Невозможно удалить пользователя, потому что он используется")
             return redirect("users:index")

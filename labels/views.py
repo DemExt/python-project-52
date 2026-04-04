@@ -1,10 +1,12 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+
 from .models import Label
+
 
 class LabelListView(LoginRequiredMixin, ListView):
     model = Label
@@ -34,7 +36,9 @@ class LabelDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     def post(self, request, *args, **kwargs):
         label = self.get_object()
         # Проверяем, привязана ли метка к какой-либо задаче
-        if label.tasks.exists(): 
-            messages.error(request, "Невозможно удалить метку, потому что она используется")
+        if label.tasks.exists():
+            messages.error(
+                request,
+                "Невозможно удалить метку, потому что она используется")
             return redirect("labels:index")
         return super().post(request, *args, **kwargs)
