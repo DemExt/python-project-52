@@ -6,7 +6,7 @@ from labels.models import Label
 User = get_user_model()
 
 class Task(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Имя")
+    name = models.CharField(max_length=100, unique=True, verbose_name="Имя")
     description = models.TextField(blank=True, verbose_name="Описание")
     status = models.ForeignKey(Status, on_delete=models.PROTECT, related_name="tasks", verbose_name="Статус")
     author = models.ForeignKey(User, on_delete=models.PROTECT, related_name="created_tasks", verbose_name="Автор")
